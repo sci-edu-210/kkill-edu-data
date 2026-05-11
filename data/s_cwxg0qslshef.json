@@ -1,9 +1,9 @@
 {
   "meta": {
-    "generatedAt": "2026-05-11T16:12:59.864Z",
+    "generatedAt": "2026-05-11T16:25:39.586Z",
     "className": "통합과학 신장고",
     "sheetName": "통합과학 신장고_수업",
-    "triggeredWeek": "all"
+    "triggeredWeek": 1
   },
   "student": {
     "name": "최인영",
@@ -18,8 +18,8 @@
       "weekNum": 1,
       "date": "2026-05-09",
       "attendance": "현장",
-      "homework": "",
-      "score": null,
+      "homework": "A",
+      "score": 20,
       "feedback": "",
       "진도": "",
       "다음진도": "",
@@ -113,7 +113,7 @@
   ],
   "summary": {
     "classAvg": [
-      "",
+      14.75,
       "",
       "",
       "",
@@ -123,7 +123,7 @@
       ""
     ],
     "maxScores": [
-      0,
+      20,
       0,
       0,
       0,
