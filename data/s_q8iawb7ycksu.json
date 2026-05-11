@@ -1,0 +1,147 @@
+{
+  "meta": {
+    "generatedAt": "2026-05-11T16:14:08.679Z",
+    "className": "물리 하남고",
+    "sheetName": "물리 하남고_수업",
+    "triggeredWeek": "all"
+  },
+  "student": {
+    "name": "김유찬",
+    "school": "하남고등학교",
+    "parentId": "p_f7d85akrcohd",
+    "studentId": "s_q8iawb7ycksu",
+    "parentTel": "",
+    "status": "재원"
+  },
+  "weeks": [
+    {
+      "weekNum": 1,
+      "date": "2026-05-06",
+      "attendance": "현장",
+      "homework": "",
+      "score": null,
+      "feedback": "",
+      "진도": "",
+      "다음진도": "",
+      "난이도": "",
+      "이번주과제": ""
+    },
+    {
+      "weekNum": 2,
+      "date": "2026-05-13",
+      "attendance": "",
+      "homework": "",
+      "score": null,
+      "feedback": "",
+      "진도": "",
+      "다음진도": "",
+      "난이도": "",
+      "이번주과제": ""
+    },
+    {
+      "weekNum": 3,
+      "date": "2026-05-20",
+      "attendance": "",
+      "homework": "",
+      "score": null,
+      "feedback": "",
+      "진도": "",
+      "다음진도": "",
+      "난이도": "",
+      "이번주과제": ""
+    },
+    {
+      "weekNum": 4,
+      "date": "2026-05-27",
+      "attendance": "",
+      "homework": "",
+      "score": null,
+      "feedback": "",
+      "진도": "",
+      "다음진도": "",
+      "난이도": "",
+      "이번주과제": ""
+    },
+    {
+      "weekNum": 5,
+      "date": "2026-06-03",
+      "attendance": "",
+      "homework": "",
+      "score": null,
+      "feedback": "",
+      "진도": "",
+      "다음진도": "",
+      "난이도": "",
+      "이번주과제": ""
+    },
+    {
+      "weekNum": 6,
+      "date": "2026-06-10",
+      "attendance": "",
+      "homework": "",
+      "score": null,
+      "feedback": "",
+      "진도": "",
+      "다음진도": "",
+      "난이도": "",
+      "이번주과제": ""
+    },
+    {
+      "weekNum": 7,
+      "date": "2026-06-17",
+      "attendance": "",
+      "homework": "",
+      "score": null,
+      "feedback": "",
+      "진도": "",
+      "다음진도": "",
+      "난이도": "",
+      "이번주과제": ""
+    },
+    {
+      "weekNum": 8,
+      "date": "2026-06-24",
+      "attendance": "",
+      "homework": "",
+      "score": null,
+      "feedback": "",
+      "진도": "",
+      "다음진도": "",
+      "난이도": "",
+      "이번주과제": ""
+    }
+  ],
+  "summary": {
+    "classAvg": [
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      ""
+    ],
+    "maxScores": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "attCounts": [
+      5,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "totalWeeks": 8
+  }
+}
