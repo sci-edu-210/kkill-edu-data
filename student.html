@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no">
+<title>내 성적표</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<style>
+:root {
+  --purple: #4A3AFF;
+  --teal:   #00C49A;
+  --gold:   #F5A623;
+  --red:    #FF4D4D;
+  --ink:    #12131A;
+  --muted:  #8A8FA8;
+  --line:   #ECEEF5;
+  --bg:     #F4F5FB;
+  --card:   #FFFFFF;
+  --r:      16px;
+}
+* { box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent; }
+body {
+  font-family: 'Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR',sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+  min-height: 100vh;
+  padding-bottom: 48px;
+}
+
+/* ── 헤더 ──────────────────────────────────────── */
+.hd {
+  background: var(--purple);
+  padding: 28px 20px 56px;
+  position: relative; overflow: hidden;
+}
+.hd::after {
+  content: '';
+  position: absolute; left: -40px; bottom: -60px;
+  width: 200px; height: 200px; border-radius: 50%;
+  background: rgba(255,255,255,0.06);
+}
+.hd-label { font-size: 11px; font-weight: 700; letter-spacing:.1em;
+            color: rgba(255,255,255,0.55); margin-bottom: 6px; }
+.hd-name  { font-size: 26px; font-weight: 800; color: #fff; }
+.hd-class { font-size: 13px; color: rgba(255,255,255,0.65); margin-top: 4px; }
+
+/* ── 점수 카드 (겹침 효과) ─────────────────────── */
+.body { padding: 0 16px; max-width: 480px; margin: 0 auto; }
+.score-card {
+  background: var(--card);
+  border-radius: var(--r);
+  box-shadow: 0 8px 32px rgba(74,58,255,0.13);
+  margin-top: -32px;
+  padding: 20px;
+  display: flex; align-items: center; gap: 16px;
+}
+.score-left { text-align: center; min-width: 100px; }
+.score-week { font-size: 11px; font-weight: 700; letter-spacing:.06em;
+              color: var(--muted); margin-bottom: 4px; }
+.score-num  {
+  font-size: 64px; font-weight: 900; line-height: 1;
+  letter-spacing: -3px; color: var(--purple);
+}
+.score-unit { font-size: 16px; color: var(--muted); }
+.score-right { flex: 1; }
+.score-diff {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 4px 10px; border-radius: 20px; font-size: 13px; font-weight: 700;
+  margin-bottom: 10px;
+}
+.diff-up   { background: #E8FBF4; color: var(--teal); }
+.diff-down { background: #FEECEC; color: var(--red); }
+.diff-same { background: #F0F1F7; color: var(--muted); }
+.score-avg-row { font-size: 12px; color: var(--muted); }
+.score-avg-row b { color: var(--ink); }
+
+/* 점수 바 */
+.sbar { height: 8px; background: #ECEEF5; border-radius: 4px; margin-top: 8px; position: relative; }
+.sbar-fill { height: 100%; border-radius: 4px; background: var(--purple); transition: width .7s ease; }
+.sbar-avg  { position: absolute; top: -4px; width: 3px; height: 16px;
+             border-radius: 2px; background: var(--gold); }
+
+/* ── 배지 ──────────────────────────────────────── */
+.badges { display: flex; gap: 8px; margin-top: 16px; flex-wrap: wrap; }
+.badge {
+  display: flex; flex-direction: column; align-items: center;
+  background: var(--card);
+  border-radius: 12px;
+  padding: 10px 14px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  flex: 1; min-width: 80px;
+}
+.badge.inactive { opacity: .35; }
+.badge-icon { font-size: 22px; margin-bottom: 4px; }
+.badge-label { font-size: 10px; font-weight: 700; color: var(--muted); text-align: center; }
+.badge-val { font-size: 13px; font-weight: 800; color: var(--ink); }
+
+/* ── 섹션 레이블 ────────────────────────────────── */
+.sec { font-size: 11px; font-weight: 700; letter-spacing:.08em;
+       color: var(--muted); margin: 24px 0 10px; }
+
+/* ── 그래프 카드 ─────────────────────────────────── */
+.chart-card {
+  background: var(--card);
+  border-radius: var(--r);
+  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+  padding: 16px;
+}
+.chart-wrap { position: relative; height: 160px; }
+
+/* ── 이번주 과제 ─────────────────────────────────── */
+.hw-card {
+  background: var(--card);
+  border-radius: var(--r);
+  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+  padding: 16px 18px;
+  border-left: 4px solid var(--purple);
+}
+.hw-label { font-size: 10px; font-weight: 700; letter-spacing:.06em; color: var(--muted); margin-bottom: 6px; }
+.hw-text  { font-size: 15px; font-weight: 600; line-height: 1.5; }
+
+/* ── 피드백 카드 ─────────────────────────────────── */
+.fb-card {
+  background: var(--card);
+  border-radius: var(--r);
+  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+  padding: 16px 18px;
+}
+.fb-label { font-size: 10px; font-weight: 700; letter-spacing:.06em; color: var(--muted); margin-bottom: 8px; }
+.fb-text  { font-size: 14px; line-height: 1.75; color: var(--ink); }
+.fb-empty { font-size: 13px; color: var(--muted); font-style: italic; }
+
+/* ── 히스토리 ───────────────────────────────────── */
+.hist-list { display: flex; flex-direction: column; gap: 6px; }
+.hist-row {
+  background: var(--card);
+  border-radius: 10px;
+  padding: 12px 16px;
+  display: flex; align-items: center; gap: 10px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+}
+.hist-num  {
+  width: 24px; height: 24px; border-radius: 50%;
+  background: var(--bg); font-size: 11px; font-weight: 700; color: var(--muted);
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.hist-date  { font-size: 13px; color: var(--muted); flex: 1; }
+.hist-score { font-size: 16px; font-weight: 700; }
+.hist-att   { font-size: 12px; font-weight: 600; padding: 2px 8px; border-radius: 12px; }
+.att-현장  { background:#E8F4FF; color:#1A6FB4; }
+.att-영상  { background:#E8F9F2; color:#138F5E; }
+.att-결석  { background:#FDEEEE; color:#C23B3B; }
+.att-x     { background:#F0F1F3; color:#A0A7B3; }
+
+.footer { text-align:center; margin-top:28px; font-size:11px; color:var(--muted); }
+.state-box {
+  display:flex; flex-direction:column; align-items:center;
+  justify-content:center; min-height:180px;
+  color:var(--muted); font-size:14px; gap:10px;
+}
+</style>
+</head>
+<body>
+
+<div id="hd"></div>
+<div id="body" class="body"></div>
+
+<script>
+const DATA_BASE = './data/';
+
+const p   = new URLSearchParams(location.search);
+const uid = p.get('id');
+
+if (!uid) {
+  showErr('링크가 올바르지 않습니다.', '문자로 받은 링크를 다시 확인해주세요.');
+} else {
+  fetch(`${DATA_BASE}${uid}.json`)
+    .then(r => { if (!r.ok) throw 0; return r.json(); })
+    .then(go)
+    .catch(() => showErr('데이터를 불러올 수 없습니다.', '선생님께 문의해주세요.'));
+}
+
+function go(d) {
+  const { student, weeks, summary, meta } = d;
+
+  // 헤더
+  qs('#hd').innerHTML = `
+    <div class="hd">
+      <div class="hd-label">케이킬 학원</div>
+      <div class="hd-name">${e(student.name)}님의 성적표</div>
+      <div class="hd-class">${e(meta.className)} · ${e(student.school || '')}</div>
+    </div>`;
+
+  const filled   = weeks.filter(w => w.score !== null || w.attendance);
+  const latest   = filled[filled.length - 1];
+  const prevData = filled.slice(0, -1);
+
+  if (!latest) {
+    qs('#body').innerHTML = `<div class="state-box">
+      <div style="font-size:32px">📋</div>
+      <div>아직 입력된 수업 데이터가 없습니다.</div>
+    </div>`;
+    return;
+  }
+
+  const prevScore = prevData.length ? prevData[prevData.length - 1].score : null;
+  const scores    = filled.map(w => w.score).filter(s => s !== null);
+  const avg       = summary.classAvg[latest.weekNum - 1];
+
+  // 점수 변화
+  let diffHtml = '';
+  if (prevScore !== null && latest.score !== null) {
+    const diff = latest.score - prevScore;
+    if (diff > 0)      diffHtml = `<span class="score-diff diff-up">▲ ${diff}점 향상</span>`;
+    else if (diff < 0) diffHtml = `<span class="score-diff diff-down">▼ ${Math.abs(diff)}점 하락</span>`;
+    else               diffHtml = `<span class="score-diff diff-same">— 지난 주와 동일</span>`;
+  }
+
+  // 점수 바
+  let barHtml = '';
+  if (latest.score !== null && avg !== null) {
+    const myPct  = latest.score;
+    const avgPct = avg;
+    barHtml = `<div class="sbar">
+      <div class="sbar-fill" style="width:${myPct}%"></div>
+      <div class="sbar-avg" style="left:${avgPct}%"></div>
+    </div>
+    <div style="font-size:10px;color:var(--muted);margin-top:4px">▎ 반평균 ${avg}점</div>`;
+  }
+
+  // 배지 계산
+  const consec = calcConsecAtt(filled);
+  const isNewHigh = scores.length > 1 && latest.score === Math.max(...scores);
+  const hwA = latest.homework === 'A' || latest.homework === 'S';
+
+  // 그래프 데이터
+  const chartLabels = filled.map(w => `${w.weekNum}주`);
+  const chartScores = filled.map(w => w.score);
+  const chartAvgs   = filled.map(w => summary.classAvg[w.weekNum - 1]);
+
+  let h = '';
+
+  // 점수 카드
+  h += `<div class="score-card">
+    <div class="score-left">
+      <div class="score-week">${latest.weekNum}주차</div>
+      <div class="score-num">${latest.score !== null ? latest.score : '—'}</div>
+      <div class="score-unit">점</div>
+    </div>
+    <div class="score-right">
+      ${diffHtml}
+      <div class="score-avg-row">반평균 <b>${avg ?? '—'}점</b></div>
+      ${barHtml}
+    </div>
+  </div>`;
+
+  // 배지
+  h += `<div class="badges">
+    <div class="badge ${consec >= 3 ? '' : 'inactive'}">
+      <div class="badge-icon">🔥</div>
+      <div class="badge-val">${consec}주</div>
+      <div class="badge-label">연속출석</div>
+    </div>
+    <div class="badge ${hwA ? '' : 'inactive'}">
+      <div class="badge-icon">⭐</div>
+      <div class="badge-val">${latest.homework || '—'}</div>
+      <div class="badge-label">과제등급</div>
+    </div>
+    <div class="badge ${isNewHigh ? '' : 'inactive'}">
+      <div class="badge-icon">📈</div>
+      <div class="badge-val">${Math.max(...scores.filter(s=>s!==null)) || '—'}점</div>
+      <div class="badge-label">내 최고점</div>
+    </div>
+  </div>`;
+
+  // 그래프
+  if (chartScores.filter(s => s !== null).length > 1) {
+    h += `<div class="sec">성적 추이</div>
+      <div class="chart-card">
+        <div class="chart-wrap"><canvas id="chart"></canvas></div>
+      </div>`;
+  }
+
+  // 이번주 과제
+  if (latest.이번주과제) {
+    h += `<div class="sec">이번주 과제</div>
+      <div class="hw-card">
+        <div class="hw-label">HOMEWORK</div>
+        <div class="hw-text">${e(latest.이번주과제)}</div>
+      </div>`;
+  }
+
+  // 피드백
+  h += `<div class="sec">선생님 피드백</div>
+    <div class="fb-card">
+      <div class="fb-label">FEEDBACK · ${fmtDate(latest.date)}</div>
+      ${latest.feedback
+        ? `<div class="fb-text">${e(latest.feedback)}</div>`
+        : `<div class="fb-empty">아직 피드백이 없습니다.</div>`}
+    </div>`;
+
+  // 히스토리
+  if (prevData.length) {
+    h += `<div class="sec">지난 수업</div><div class="hist-list">`;
+    [...prevData].reverse().forEach(w => {
+      const ac = { '현장': 'att-현장', '영상': 'att-영상', '결석': 'att-결석' };
+      h += `<div class="hist-row">
+        <div class="hist-num">${w.weekNum}</div>
+        <div class="hist-date">${fmtDate(w.date)}</div>
+        <span class="hist-att ${ac[w.attendance] || 'att-x'}">${w.attendance || '—'}</span>
+        <div class="hist-score">${w.score !== null ? w.score + '점' : '—'}</div>
+      </div>`;
+    });
+    h += `</div>`;
+  }
+
+  const t = new Date(meta.generatedAt);
+  h += `<div class="footer">마지막 업데이트: ${fmt(t)}</div>`;
+
+  qs('#body').innerHTML = h;
+
+  // 차트 렌더링
+  const canvas = qs('#chart');
+  if (canvas) {
+    new Chart(canvas, {
+      type: 'line',
+      data: {
+        labels: chartLabels,
+        datasets: [
+          {
+            label: '내 점수',
+            data: chartScores,
+            borderColor: '#4A3AFF',
+            backgroundColor: 'rgba(74,58,255,0.08)',
+            borderWidth: 2.5,
+            pointBackgroundColor: '#4A3AFF',
+            pointRadius: 5,
+            tension: 0.3,
+            fill: true,
+            spanGaps: true
+          },
+          {
+            label: '반 평균',
+            data: chartAvgs,
+            borderColor: '#F5A623',
+            borderWidth: 1.5,
+            borderDash: [4, 3],
+            pointRadius: 0,
+            tension: 0.3,
+            fill: false,
+            spanGaps: true
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              label: ctx => `${ctx.dataset.label}: ${ctx.raw}점`
+            }
+          }
+        },
+        scales: {
+          y: {
+            min: 0, max: 100,
+            grid: { color: '#ECEEF5' },
+            ticks: { font: { size: 10 }, color: '#8A8FA8', stepSize: 20 }
+          },
+          x: {
+            grid: { display: false },
+            ticks: { font: { size: 11 }, color: '#8A8FA8' }
+          }
+        }
+      }
+    });
+  }
+}
+
+// ── 헬퍼 ──────────────────────────────────────────
+function calcConsecAtt(weeks) {
+  let count = 0;
+  for (let i = weeks.length - 1; i >= 0; i--) {
+    const a = weeks[i].attendance;
+    if (a === '현장' || a === '영상') count++;
+    else break;
+  }
+  return count;
+}
+
+function fmtDate(s) {
+  if (!s) return '—';
+  const d = new Date(s);
+  return isNaN(d) ? s : `${d.getMonth() + 1}월 ${d.getDate()}일`;
+}
+
+function fmt(d) {
+  const pad = n => String(n).padStart(2, '0');
+  return `${d.getFullYear()}.${pad(d.getMonth()+1)}.${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+}
+
+function e(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function qs(s) { return document.querySelector(s); }
+
+function showErr(title, sub) {
+  document.body.innerHTML = `
+    <div style="display:flex;flex-direction:column;align-items:center;
+                justify-content:center;min-height:100vh;padding:32px;text-align:center;
+                font-family:sans-serif;color:#8A8FA8;gap:10px">
+      <div style="font-size:32px">⚠️</div>
+      <div style="font-size:17px;font-weight:700;color:#12131A">${title}</div>
+      <div style="font-size:14px">${sub}</div>
+    </div>`;
+}
+</script>
+</body>
+</html>

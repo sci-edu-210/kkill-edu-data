@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no">
+<title>케이킬 수업 결과</title>
+<style>
+:root {
+  --ink:    #1B1F2A;
+  --navy:   #1E3A5F;
+  --blue:   #2D6BE4;
+  --green:  #18A87A;
+  --red:    #D94F4F;
+  --amber:  #E07B2A;
+  --muted:  #7A8494;
+  --line:   #E8ECF0;
+  --bg:     #F2F5F9;
+  --card:   #FFFFFF;
+  --r:      14px;
+}
+
+* { box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent; }
+
+body {
+  font-family: 'Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR',sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+  min-height: 100vh;
+  padding-bottom: 48px;
+}
+
+/* ── 헤더 ──────────────────────────────────────── */
+.hd {
+  background: var(--navy);
+  padding: 28px 20px 32px;
+  position: relative; overflow: hidden;
+}
+.hd::before {
+  content: '';
+  position: absolute; right: -30px; top: -30px;
+  width: 160px; height: 160px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.04);
+}
+.hd-badge {
+  display: inline-block;
+  background: rgba(255,255,255,0.12);
+  color: rgba(255,255,255,0.8);
+  font-size: 11px; font-weight: 600;
+  letter-spacing: .06em;
+  padding: 4px 10px; border-radius: 20px;
+  margin-bottom: 12px;
+}
+.hd-name { font-size: 24px; font-weight: 700; color: #fff; margin-bottom: 3px; }
+.hd-sub  { font-size: 14px; color: rgba(255,255,255,0.6); }
+.hd-class {
+  display: inline-block; margin-top: 14px;
+  background: var(--blue);
+  color: #fff; font-size: 13px; font-weight: 600;
+  padding: 5px 14px; border-radius: 20px;
+}
+
+/* ── 레이아웃 ───────────────────────────────────── */
+.body { padding: 0 16px; max-width: 480px; margin: 0 auto; }
+
+.section-label {
+  font-size: 11px; font-weight: 700; letter-spacing: .08em;
+  color: var(--muted); text-transform: uppercase;
+  margin: 24px 0 10px;
+}
+
+/* ── 최신 카드 ──────────────────────────────────── */
+.latest {
+  background: var(--card);
+  border-radius: var(--r);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.07);
+  overflow: hidden;
+}
+.latest-top {
+  background: var(--navy);
+  padding: 14px 18px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.latest-top-left { }
+.week-label { font-size: 11px; color: rgba(255,255,255,0.6); margin-bottom: 2px; }
+.week-date  { font-size: 18px; font-weight: 700; color: #fff; }
+
+/* 점수 구역 */
+.score-section {
+  padding: 20px 18px 16px;
+  display: flex; align-items: flex-end; gap: 16px;
+  border-bottom: 1px solid var(--line);
+}
+.score-num {
+  font-size: 56px; font-weight: 800; line-height: 1;
+  color: var(--navy); letter-spacing: -2px;
+}
+.score-unit { font-size: 18px; color: var(--muted); margin-bottom: 8px; }
+.score-right { flex: 1; padding-bottom: 6px; }
+.score-compare {
+  font-size: 12px; color: var(--muted);
+  display: flex; flex-direction: column; gap: 3px; margin-bottom: 8px;
+}
+.score-compare b { color: var(--ink); }
+.bar-wrap { position: relative; height: 6px; background: #EAECF0; border-radius: 3px; }
+.bar-fill { height: 100%; border-radius: 3px; transition: width .6s ease; }
+.bar-avg-marker {
+  position: absolute; top: -3px;
+  width: 2px; height: 12px; border-radius: 1px;
+  background: var(--amber);
+}
+.bar-legend { font-size: 10px; color: var(--muted); margin-top: 4px; }
+
+/* 정보 그리드 */
+.info-grid {
+  display: grid; grid-template-columns: 1fr 1fr;
+  border-top: 1px solid var(--line);
+}
+.info-cell {
+  padding: 12px 18px;
+  border-right: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+.info-cell:nth-child(even) { border-right: none; }
+.info-cell.full { grid-column: 1/-1; border-right: none; }
+.info-l { font-size: 10px; font-weight: 700; letter-spacing:.05em; color: var(--muted); margin-bottom: 5px; }
+.info-v { font-size: 14px; font-weight: 600; line-height: 1.4; }
+
+/* 피드백 */
+.fb-box {
+  padding: 14px 18px;
+  background: #FAFBFD;
+}
+.fb-label { font-size: 10px; font-weight: 700; letter-spacing:.05em; color: var(--muted); margin-bottom: 7px; }
+.fb-text  { font-size: 14px; line-height: 1.7; color: var(--ink); }
+.fb-empty { font-size: 13px; color: var(--muted); font-style: italic; }
+
+/* ── 배지 ──────────────────────────────────────── */
+.att-badge {
+  display: inline-flex; align-items: center;
+  padding: 4px 11px; border-radius: 20px;
+  font-size: 12px; font-weight: 700;
+}
+.att-현장 { background:#E8F4FF; color:#1A6FB4; }
+.att-영상 { background:#E8F9F2; color:#138F5E; }
+.att-결석 { background:#FDEEEE; color:#C23B3B; }
+.att-미입력 { background:#F0F1F3; color:#A0A7B3; }
+
+.hw-badge {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 30px; height: 30px; border-radius: 50%;
+  font-size: 14px; font-weight: 800;
+}
+.hw-A,.hw-S { background:#E8F9F2; color:#138F5E; }
+.hw-B { background:#E8F4FF; color:#1A6FB4; }
+.hw-C { background:#FFF7E6; color:#B8720E; }
+.hw-D,.hw-E { background:#FDEEEE; color:#C23B3B; }
+.hw-x { background:#F0F1F3; color:#C0C5CF; font-size:12px; }
+
+/* ── 타임라인 ───────────────────────────────────── */
+.tl-card {
+  background: var(--card);
+  border-radius: var(--r);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  margin-bottom: 8px;
+  overflow: hidden;
+}
+.tl-row {
+  display: flex; align-items: center; gap: 10px;
+  padding: 14px 16px; cursor: pointer;
+  user-select: none;
+}
+.tl-num {
+  width: 26px; height: 26px; border-radius: 50%;
+  background: var(--bg); flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 700; color: var(--muted);
+}
+.tl-date  { font-size: 13px; color: var(--muted); flex: 1; }
+.tl-score { font-size: 17px; font-weight: 700; }
+.tl-chevron { font-size: 12px; color: var(--muted); transition: transform .2s; }
+.tl-row.open .tl-chevron { transform: rotate(180deg); }
+
+.tl-detail {
+  display: none; padding: 0 16px 14px;
+  border-top: 1px solid var(--line);
+}
+.tl-detail.open { display: block; }
+.tl-dg {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 10px; margin-top: 12px;
+}
+.tl-dg-item { }
+.tl-dl { font-size: 10px; font-weight: 700; letter-spacing:.05em; color: var(--muted); margin-bottom: 3px; }
+.tl-dv { font-size: 13px; font-weight: 600; }
+.tl-full { grid-column: 1/-1; }
+.tl-fb {
+  margin-top: 10px; padding: 10px 12px;
+  background: #FAFBFD; border-radius: 8px;
+  font-size: 13px; line-height: 1.6; color: var(--ink);
+  border-left: 3px solid var(--blue);
+}
+
+/* ── 상태 ──────────────────────────────────────── */
+.state-box {
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  min-height: 200px; color: var(--muted); font-size: 14px;
+  text-align: center; gap: 8px;
+}
+.state-icon { font-size: 32px; }
+.footer {
+  text-align: center; margin-top: 28px;
+  font-size: 11px; color: var(--muted);
+}
+</style>
+</head>
+<body>
+
+<div id="hd"></div>
+<div id="body"></div>
+
+<script>
+const DATA_BASE = './data/';
+
+const p   = new URLSearchParams(location.search);
+const uid = p.get('id');
+
+if (!uid) {
+  showErr('링크가 올바르지 않습니다.', '문자로 받은 링크를 다시 확인해주세요.');
+} else {
+  fetch(`${DATA_BASE}${uid}.json`)
+    .then(r => { if (!r.ok) throw 0; return r.json(); })
+    .then(go)
+    .catch(() => showErr('데이터를 불러올 수 없습니다.', '선생님께 문의해주세요.'));
+}
+
+function go(d) {
+  const { student, weeks, summary, meta } = d;
+
+  // 데이터 있는 주차 (점수 or 출석 있음)
+  const filled  = weeks.filter(w => w.score !== null || w.attendance);
+  const latest  = filled[filled.length - 1];
+  const prev    = filled.slice(0, -1).reverse();
+
+  // 헤더
+  qs('#hd').innerHTML = `
+    <div class="hd">
+      <div class="hd-badge">케이킬 학원</div>
+      <div class="hd-name">${e(student.name)} 학생 보호자님</div>
+      <div class="hd-sub">${e(student.school || '')}</div>
+      <div class="hd-class">${e(meta.className)}</div>
+    </div>`;
+
+  if (!latest) {
+    qs('#body').innerHTML = `<div class="body"><div class="state-box">
+      <div class="state-icon">📋</div>
+      <div>아직 입력된 수업 데이터가 없습니다.</div>
+    </div></div>`;
+    return;
+  }
+
+  let h = '<div class="body">';
+
+  h += '<div class="section-label">최신 수업</div>';
+  h += latestCard(latest, summary);
+
+  if (prev.length) {
+    h += '<div class="section-label">이전 수업</div>';
+    prev.forEach(w => { h += tlCard(w, summary); });
+  }
+
+  const t = new Date(meta.generatedAt);
+  h += `<div class="footer">마지막 업데이트: ${fmt(t)}</div>`;
+  h += '</div>';
+
+  qs('#body').innerHTML = h;
+
+  // 타임라인 토글
+  qsa('.tl-row').forEach(row => {
+    row.addEventListener('click', () => {
+      row.classList.toggle('open');
+      row.nextElementSibling.classList.toggle('open');
+    });
+  });
+}
+
+function latestCard(w, sum) {
+  const avg = sum.classAvg[w.weekNum - 1];
+  const max = sum.maxScores[w.weekNum - 1];
+  const sc  = w.score;
+
+  let bar = '';
+  if (sc !== null && avg !== null && max) {
+    const myPct  = Math.round((sc / 100) * 100);
+    const avgPct = Math.round((avg / 100) * 100);
+    const col    = sc >= avg ? 'var(--green)' : 'var(--blue)';
+    bar = `<div class="bar-wrap">
+      <div class="bar-fill" style="width:${myPct}%;background:${col}"></div>
+      <div class="bar-avg-marker" style="left:${avgPct}%"></div>
+    </div>
+    <div class="bar-legend">▎ 반평균 ${avg}점</div>`;
+  }
+
+  return `<div class="latest">
+    <div class="latest-top">
+      <div class="latest-top-left">
+        <div class="week-label">${w.weekNum}주차</div>
+        <div class="week-date">${fmtDate(w.date)}</div>
+      </div>
+      ${attBadge(w.attendance)}
+    </div>
+
+    <div class="score-section">
+      <div>
+        <div class="score-num">${sc !== null ? sc : '—'}</div>
+        <div class="score-unit">점</div>
+      </div>
+      <div class="score-right">
+        <div class="score-compare">
+          <span>반평균 <b>${avg ?? '—'}점</b></span>
+          <span>최고점 <b>${max ?? '—'}점</b></span>
+        </div>
+        ${bar}
+      </div>
+    </div>
+
+    <div class="info-grid">
+      <div class="info-cell">
+        <div class="info-l">과제</div>
+        <div class="info-v">${hwBadge(w.homework)}</div>
+      </div>
+      <div class="info-cell">
+        <div class="info-l">난이도</div>
+        <div class="info-v">${e(w.난이도 || '—')}</div>
+      </div>
+      <div class="info-cell full">
+        <div class="info-l">이번 진도</div>
+        <div class="info-v">${e(w.진도 || '—')}</div>
+      </div>
+      <div class="info-cell full">
+        <div class="info-l">다음 진도</div>
+        <div class="info-v">${e(w.다음진도 || '—')}</div>
+      </div>
+      <div class="info-cell full" style="border-bottom:none">
+        <div class="info-l">이번주 과제</div>
+        <div class="info-v">${e(w.이번주과제 || '—')}</div>
+      </div>
+    </div>
+
+    <div class="fb-box">
+      <div class="fb-label">선생님 피드백</div>
+      ${w.feedback
+        ? `<div class="fb-text">${e(w.feedback)}</div>`
+        : `<div class="fb-empty">아직 피드백이 없습니다.</div>`}
+    </div>
+  </div>`;
+}
+
+function tlCard(w, sum) {
+  const avg = sum.classAvg[w.weekNum - 1];
+  return `<div class="tl-card">
+    <div class="tl-row">
+      <div class="tl-num">${w.weekNum}</div>
+      <div class="tl-date">${fmtDate(w.date)}</div>
+      ${attBadge(w.attendance)}
+      <div class="tl-score">${w.score !== null ? w.score + '점' : '—'}</div>
+      <div class="tl-chevron">▾</div>
+    </div>
+    <div class="tl-detail">
+      <div class="tl-dg">
+        <div class="tl-dg-item">
+          <div class="tl-dl">과제</div>
+          <div class="tl-dv">${hwBadge(w.homework)}</div>
+        </div>
+        <div class="tl-dg-item">
+          <div class="tl-dl">반평균</div>
+          <div class="tl-dv">${avg !== null ? avg + '점' : '—'}</div>
+        </div>
+        <div class="tl-dg-item tl-full">
+          <div class="tl-dl">진도</div>
+          <div class="tl-dv">${e(w.진도 || '—')}</div>
+        </div>
+        <div class="tl-dg-item tl-full">
+          <div class="tl-dl">이번주 과제</div>
+          <div class="tl-dv">${e(w.이번주과제 || '—')}</div>
+        </div>
+      </div>
+      ${w.feedback ? `<div class="tl-fb">${e(w.feedback)}</div>` : ''}
+    </div>
+  </div>`;
+}
+
+// ── 헬퍼 ──────────────────────────────────────────
+function attBadge(a) {
+  const map = { '현장': 'att-현장', '영상': 'att-영상', '결석': 'att-결석' };
+  return `<span class="att-badge ${map[a] || 'att-미입력'}">${a || '미입력'}</span>`;
+}
+function hwBadge(hw) {
+  if (!hw) return '<span class="hw-badge hw-x">—</span>';
+  const cls = ['A','B','C','D','E','S'].includes(hw) ? `hw-${hw}` : 'hw-x';
+  return `<span class="hw-badge ${cls}">${hw}</span>`;
+}
+function fmtDate(s) {
+  if (!s) return '—';
+  const d = new Date(s);
+  return isNaN(d) ? s : `${d.getMonth() + 1}월 ${d.getDate()}일`;
+}
+function fmt(d) {
+  const pad = n => String(n).padStart(2, '0');
+  return `${d.getFullYear()}.${pad(d.getMonth()+1)}.${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+}
+function e(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+function qs(s)  { return document.querySelector(s); }
+function qsa(s) { return document.querySelectorAll(s); }
+
+function showErr(title, sub) {
+  document.body.innerHTML = `
+    <div style="display:flex;flex-direction:column;align-items:center;
+                justify-content:center;min-height:100vh;padding:32px;text-align:center;
+                font-family:sans-serif;color:#7A8494;gap:10px">
+      <div style="font-size:32px">⚠️</div>
+      <div style="font-size:17px;font-weight:700;color:#1B1F2A">${title}</div>
+      <div style="font-size:14px">${sub}</div>
+    </div>`;
+}
+</script>
+</body>
+</html>
