@@ -1,9 +1,9 @@
 {
   "meta": {
-    "generatedAt": "2026-05-11T15:52:19.718Z",
+    "generatedAt": "2026-05-11T16:13:09.336Z",
     "className": "물리A",
     "sheetName": "물리A_수업",
-    "triggeredWeek": 1
+    "triggeredWeek": "all"
   },
   "student": {
     "name": "김세훈",
