@@ -1,9 +1,9 @@
 {
   "meta": {
-    "generatedAt": "2026-05-11T16:13:09.336Z",
+    "generatedAt": "2026-05-11T16:24:36.714Z",
     "className": "물리A",
     "sheetName": "물리A_수업",
-    "triggeredWeek": "all"
+    "triggeredWeek": 1
   },
   "student": {
     "name": "김세훈",
@@ -18,8 +18,8 @@
       "weekNum": 1,
       "date": "2026-05-09",
       "attendance": "현장",
-      "homework": "",
-      "score": null,
+      "homework": "A",
+      "score": 10,
       "feedback": "",
       "진도": "",
       "다음진도": "",
@@ -113,7 +113,7 @@
   ],
   "summary": {
     "classAvg": [
-      "",
+      9.88888888888889,
       "",
       "",
       "",
@@ -123,7 +123,7 @@
       ""
     ],
     "maxScores": [
-      0,
+      11,
       0,
       0,
       0,
